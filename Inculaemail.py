@@ -4,13 +4,19 @@ from email.header import decode_header
 
 # account credentials -will be to be extracted from file.-
 def getcredentials(file):
-    f = open(file, "r")
-    listline = f.readlines()
-    f.close()
-    username = listline[0]
-    password = listline[1]
-    regmail = listline[2]
-    return username, password, regmail
+    try:
+        print("\nGrabbing credentials from File creds.txt")
+        f = open(file, "r")
+        listline = f.readlines()
+        username = listline[0]
+        password = listline[1]
+        regmail = listline[2]
+    except IOError:
+        print("! File creds.txt does not exist, Insert credentials by hand:")
+        username = input("username : ")
+        password = input("password : ")
+        regmail = input("Target email : ")
+    return(username,password,regmail)
 
 #extract body from email msg (needs specific email-code)
 def get_body(msg):
@@ -19,11 +25,11 @@ def get_body(msg):
     else:
         return msg.get_payload(None,True)
 
-def mailbackup(body,emailcode):
-    print ("====== BACKUP MAIL NO {} IN FILE\n".format(emailcode))
-    f = open('outputmail.txt', 'w')
+def mailbackup(filename,body,emailcode):
+    print ("\nbacking up mail no {} \n".format(emailcode))
+    f = open(filename, 'w')
     f.write(body)
-    print ("====== BACKUP DONE. outputmail.txt")
+    print ("\nBackup done. outputmail.txt")
     f.close()
     return body
 
@@ -35,11 +41,11 @@ def search(key,value):
     return data
 
 #load credentials from file cred.txt -email -passwd -mail address to search and parse
-credentials = "cred.txt"
-username, password, regmail = getcredentials(credentials)
+credfile = "cred.txt"
+username, password, regmail = getcredentials(credfile)
 
 #useroutput not needed
-print ("\n====== CREDENTIALS ======\n\n > username: {} > email cassa: {}".format(username,regmail))
+print ("\n>> Applying credentials : \nusername: {} \nselected mail: {}\n".format(username,regmail))
 
 # create an IMAP4 class with SSL and auth, then select from INBOX  (default)
 imap = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -59,4 +65,4 @@ actual_body = body.get_payload(0)
 
 mailbody = actual_body.__str__()
 
-mmm = mailbackup(mailbody,"12")
+mmm = mailbackup("../sevendata/outputmail.txt",mailbody,"12")
