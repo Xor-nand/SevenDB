@@ -65,4 +65,4 @@ actual_body = body.get_payload(0)
 
 mailbody = actual_body.__str__()
 
-mmm = mailbackup("../sevendata/outputmail.txt",mailbody,"12")
+mmm = mailbackup("outputmail.txt",mailbody,"12")
