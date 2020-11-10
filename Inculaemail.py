@@ -17,8 +17,8 @@ def getcredentials(file):
         password = input("password : ")
         regmail = input("Target email : ")
     return(username,password,regmail)
-
-#extract body from email msg (needs specific email-code)
+#check mail from (post erxtraction)
+#extract body from email msg (needs specific email-code)\
 def get_body(msg):
     if msg.is_multipart():
         return get_body(msg.get_payload(1))
@@ -36,12 +36,32 @@ def mailbackup(filename,body,emailcode):
 #useless
 def search(key,value):
     result, data = imap.search(None, key, '"({})"'.format(value))
-#    print (data)
-#    print (result)
-    return data
+    print (type(data))
+    print (type(data[0]))
+    print (type(data[0][0]))
+    print (data)
+    print (data[0])
+    print (data[0][0])
+    #for i in data[0]:
+    #    print(data[0][i],end=' ')
+    #last_parsed from file
+    last_parsed = 16
+    datalist = data[0].decode()
+    bitt = datalist.strip().split(' ')
+    ##print(bitt)
+    ##print(type(bitt))
+    ##print(type(bitt[0]))
+    ##bitte = int(bitt[0])
+    ##print(type(bitte))
+    for i in bitt:
+        caca = int(i)
+        if caca == last_parsed + 1:
+            new_pars = caca
+    new_pars = str(new_pars).encode()
+    return new_pars
 
 #load credentials from file cred.txt -email -passwd -mail address to search and parse
-credfile = "cred.txt"
+credfile = "creds.txt"
 username, password, regmail = getcredentials(credfile)
 
 #useroutput not needed
@@ -54,8 +74,15 @@ status, messages = imap.select("INBOX")
 
 print ("====== DONE.\n")
 
+
+#ciao = search('FROM','camerinipaolo31@gmail.com')
+#final = bytes(str(ciao).encode())
+#print(type(final))
+#print(final)
+
 #fetch all email data based on mail identifier (MOVE)
-result, data = imap.fetch(b'17','(RFC822)')
+#result, data = imap.fetch(b'17','(RFC822)')
+result, data = imap.fetch(search('FROM','camerinipaolo31@gmail.com'),'(RFC822)')
 
 #raw data of email
 raw = email.message_from_bytes(data[0][1])
